@@ -1,7 +1,11 @@
 package vn.kieudon.workwave.domain.dto;
 
+import jakarta.validation.constraints.NotBlank;
+
 public class LoginDTO {
+    @NotBlank(message = "user không được để trống")
     private String username;
+    @NotBlank(message = "password không được để trống")
     private String password;
     public String getUsername() {
         return username;

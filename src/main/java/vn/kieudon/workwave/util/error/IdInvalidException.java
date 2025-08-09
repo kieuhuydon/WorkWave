@@ -1,4 +1,4 @@
-package vn.kieudon.workwave.service.error;
+package vn.kieudon.workwave.util.error;
 
 public class IdInvalidException  extends Exception{
     public IdInvalidException(String message){

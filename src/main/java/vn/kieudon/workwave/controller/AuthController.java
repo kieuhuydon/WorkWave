@@ -9,27 +9,38 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import jakarta.validation.Valid;
 import vn.kieudon.workwave.domain.dto.LoginDTO;
+import vn.kieudon.workwave.domain.dto.TokenDTO;
+import vn.kieudon.workwave.util.SecurityUtil;
 
 @RestController
 public class AuthController {
     private final AuthenticationManagerBuilder authenticationManagerBuilder;
+    private final SecurityUtil securityUtil;
 
-    public AuthController(AuthenticationManagerBuilder authenticationManagerBuilder){
+    public AuthController(AuthenticationManagerBuilder authenticationManagerBuilder
+    ,SecurityUtil securityUtil){
         this.authenticationManagerBuilder = authenticationManagerBuilder;
+        this.securityUtil = securityUtil;
     }
     @PostMapping("/login")
-    public ResponseEntity<LoginDTO> login(@RequestBody LoginDTO loginDTO) {
+    public ResponseEntity<TokenDTO > login(@Valid @RequestBody LoginDTO loginDTO) {
         // Nạp input gồm username/password vào Security
         UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(loginDTO.getUsername(), loginDTO.getPassword());
 
         // Xác thực người dùng => cần viết hàm loadUserByUsername trong
-        // UserDetailsService
+        // UserDetailsService, authentication không lưu password
         Authentication authentication = authenticationManagerBuilder.getObject().authenticate(authenticationToken);
 
         // Nạp thông tin (nếu xử lý thành công) vào SecurityContext
         SecurityContextHolder.getContext().setAuthentication(authentication);
 
-        return ResponseEntity.ok().body(loginDTO);
+        //create  a token
+        String access_token = this.securityUtil.createToken(authentication);
+        TokenDTO token = new TokenDTO();
+        token.setAccessToken(access_token);
+
+        return ResponseEntity.ok().body(token);
     }
 }

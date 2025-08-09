@@ -6,7 +6,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 import vn.kieudon.workwave.domain.User;
 import vn.kieudon.workwave.service.UserService;
-import vn.kieudon.workwave.service.error.IdInvalidException;
+import vn.kieudon.workwave.util.error.IdInvalidException;
 
 import java.util.List;
 
