@@ -43,6 +43,10 @@ public class Company{
         this.createdBy = createdBy;
         this.updatedBy = updatedBy;
     }
+
+    public Company(){
+        
+    }
     public long getId() {
         return id;
     }

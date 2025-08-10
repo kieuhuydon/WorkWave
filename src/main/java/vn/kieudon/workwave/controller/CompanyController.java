@@ -15,12 +15,10 @@ import vn.kieudon.workwave.service.CompanyService;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.PutMapping;
-
-
-
 
 
 
@@ -50,17 +48,22 @@ public class CompanyController {
         return ResponseEntity.status(HttpStatus.OK).body(companies);
     }
 
-    //trương hợp update một vài fiel thôi chứ không tất
     @PutMapping("/companies/{id}")
-    public ResponseEntity<Company>updateCompany(@Valid @RequestBody Company reqCompany) {
-        Company updateCompany = this.companyService.handleUpdateCompany(reqCompany);
+    public ResponseEntity<Company>updateCompany(@Valid @RequestBody Company reqCompany, @PathVariable long id) {
+        Company updateCompany = this.companyService.handleUpdateCompany(reqCompany, id);
+        return ResponseEntity.status(HttpStatus.OK).body(updateCompany);
+    }
+
+    @PatchMapping("/companies/{id}")
+    public ResponseEntity<Company> updatePartialCompany(@Valid @RequestBody Company reqCompany, @PathVariable long id) {
+        Company updateCompany = this.companyService.handlePartialUpdateCompany(reqCompany, id);
         return ResponseEntity.status(HttpStatus.OK).body(updateCompany);
     }
 
     @DeleteMapping("/companies/{id}")
-    public ResponseEntity<String> deleteCompanyById (@PathVariable Long id){
+    public ResponseEntity<Void> deleteCompanyById (@PathVariable Long id){
         this.companyService.deleteCompanyById(id);
-        return ResponseEntity.status(HttpStatus.OK).body("success");
+        return ResponseEntity.status(HttpStatus.OK).body(null);
  
     }
 

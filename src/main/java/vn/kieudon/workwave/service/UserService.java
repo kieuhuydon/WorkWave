@@ -42,7 +42,7 @@ public class UserService {
         this.userRepository.deleteById(id);
     }
 
-    // delete user
+   
     public User handleUpdateUser(long id, User reqUser){
         User currentUser = this.fetchUserById(id);
         if(currentUser !=null){

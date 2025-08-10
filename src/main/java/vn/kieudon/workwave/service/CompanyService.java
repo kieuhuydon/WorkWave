@@ -31,7 +31,7 @@ public class CompanyService {
         return this.companyRepository.findAll();
     }
 
-    public Company handleUpdateCompany(long id, Company company){
+    public Company handleUpdateCompany(Company company, Long id){
         Company currentCompany = this.findCompanyById(id);
         if(currentCompany != null){
             currentCompany.setName(company.getName());
@@ -44,6 +44,27 @@ public class CompanyService {
         }
         return null;
     }
+
+    public Company handlePartialUpdateCompany(Company company, Long id) {
+    Company currentCompany = this.findCompanyById(id);
+    if (currentCompany != null) {
+        if (company.getName() != null) {
+            currentCompany.setName(company.getName());
+        }
+        if (company.getAddress() != null) {
+            currentCompany.setAddress(company.getAddress());
+        }
+        if (company.getLogo() != null) {
+            currentCompany.setLogo(company.getLogo());
+        }
+        if (company.getDescription() != null) {
+            currentCompany.setDescription(company.getDescription());
+        }
+        return this.handleSaveCompany(currentCompany);
+    }
+    return null;
+}
+
 
     public void deleteCompanyById(Long id){
         this.companyRepository.deleteById(id);
