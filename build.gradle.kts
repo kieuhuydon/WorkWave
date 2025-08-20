@@ -1,3 +1,4 @@
+import org.gradle.api.tasks.compile.JavaCompile
 plugins {
 	java
 	id("org.springframework.boot") version "3.4.7"
@@ -36,4 +37,14 @@ dependencies {
 
 tasks.withType<Test> {
 	useJUnitPlatform()
+}
+
+tasks.withType<JavaCompile> {
+    options.compilerArgs.add("-parameters")
+}
+
+tasks.withType<JavaCompile> {
+    doFirst {
+        println("Compiler args: ${options.compilerArgs}")
+    }
 }

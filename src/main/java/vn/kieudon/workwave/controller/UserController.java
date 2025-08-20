@@ -1,15 +1,18 @@
 package vn.kieudon.workwave.controller;
 
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 import vn.kieudon.workwave.domain.User;
+import vn.kieudon.workwave.domain.dto.ResultPagination;
 import vn.kieudon.workwave.service.UserService;
 import vn.kieudon.workwave.util.error.IdInvalidException;
 
 import java.util.List;
-
+import java.util.Optional;
 
 @RestController
 
@@ -32,20 +35,29 @@ public class UserController {
     }
 
     @GetMapping("/users")
-    public ResponseEntity<List<User>> getAllUser() {
-        return ResponseEntity.status(HttpStatus.OK).body(this.userService.fetchAllUser());
+    public ResponseEntity<ResultPagination> getAllUser(
+            @RequestParam("current") Optional<String> currentOptional,
+            @RequestParam("pageSize") Optional<String> pageSizeOptional) {
+
+        String scurrent = currentOptional.isPresent() ? currentOptional.get() : "";
+        String spageSize = pageSizeOptional.isPresent() ? pageSizeOptional.get() : "";
+
+        int current = Integer.parseInt(scurrent);
+        int pageSize = Integer.parseInt(spageSize);
+
+        Pageable pageable = PageRequest.of(current - 1, pageSize);
+
+        return ResponseEntity.status(HttpStatus.OK).body(this.userService.fetchAllUser(pageable));
     }
 
     @GetMapping("/users/{id}")
-    public ResponseEntity<User> getUserById(@PathVariable long id) {
+    public ResponseEntity<User> getUserById(@PathVariable("id") Long id) {
         User fetchUser = this.userService.fetchUserById(id);
         return ResponseEntity.status(HttpStatus.OK).body(fetchUser);
     }
 
-    
-
     @DeleteMapping("/users/{id}")
-    public ResponseEntity<String> deleteUserById(@PathVariable long id) throws IdInvalidException {
+    public ResponseEntity<String> deleteUserById(@PathVariable("id") Long id) throws IdInvalidException {
         if (id >= 1500) {
             throw new IdInvalidException("id không quá 1500");
         }
@@ -55,7 +67,7 @@ public class UserController {
     }
 
     @PutMapping("/users/{id}")
-    public ResponseEntity<User> updateUserById(@PathVariable long id, @RequestBody User user) {
+    public ResponseEntity<User> updateUserById(@PathVariable("id") Long id, @RequestBody User user) {
         User updateUser = this.userService.handleUpdateUser(id, user);
         return ResponseEntity.ok(updateUser);
     }
